@@ -136,6 +136,7 @@ namespace UnityOSC
 				if(bytes != null && bytes.Length > 0)
 				{
                     OSCPacket packet = OSCPacket.Unpack(bytes);
+					if(!packet.Address.Equals("/osceleton/face_mesh")) return;
                     _lastReceivedPacket = packet;
 
                     PacketReceivedEvent(this, _lastReceivedPacket);	
@@ -154,7 +155,7 @@ namespace UnityOSC
 			while( true )
 			{
 				Receive();
-                Thread.Sleep(10);
+                //Thread.Sleep(10);
 			}
 		}
 		#endregion
