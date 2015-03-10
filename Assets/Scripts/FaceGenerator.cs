@@ -21,14 +21,14 @@ public class FaceGenerator : MonoBehaviour {
 		
 		foreach(var packet in servers["osceleton"].packets)
 		{
-			Debug.Log(packet.Address);	
+			//Debug.Log(packet.Address);	
 			if(packet.Address.Equals("/osceleton/face_mesh")) {
 				var list = new List<Vector3>();
 				for( int i = 0; i < FaceConst.FACE_NUM_POINTS; i++) {
-					float x = -(float)packet.Data[i * 3 + 2];
-					float y = -(float)packet.Data[i * 3 + 3];
-					float z = (float)packet.Data[i * 3 + 4];
-//					Debug.Log(x + " " + y + " " + z);
+					float scale = 100;
+					float x = (float)packet.Data[i * 3 + 2] * scale;
+					float y = (float)packet.Data[i * 3 + 3] * scale;
+					float z = (float)packet.Data[i * 3 + 4] * scale;
 					list.Add(new Vector3(x, y, z));
 				}
 				faceMesh.GetComponent<FaceManager>().SetMesh(list);

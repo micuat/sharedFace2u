@@ -4,24 +4,23 @@ using System.Collections.Generic;
 
 public class FaceManager : MonoBehaviour {
 
+	Mesh mesh;
+
+	Vector3[] vertices = new Vector3[FaceConst.FACE_NUM_POINTS];
+	Vector3[] normals = new Vector3[FaceConst.FACE_NUM_POINTS];
+	Vector2[] uvs = new Vector2[FaceConst.FACE_NUM_POINTS];
+	int[] triangles = new int[FaceConst.FACE_NUM_TRIANGLES * 3];
+
 	// Use this for initialization
 	void Start () {
-		var mesh = new Mesh();
+		mesh = new Mesh();
 		mesh.name = "Mesh";
-		
-		int numVerts = FaceConst.FACE_NUM_POINTS;
-		
-		var vertices = new Vector3[FaceConst.FACE_NUM_POINTS];
-		var normals = new Vector3[FaceConst.FACE_NUM_POINTS];
-		var uvs = new Vector2[FaceConst.FACE_NUM_POINTS];
-		var triangles = new int[FaceConst.FACE_NUM_TRIANGLES * 3];
 
 		for(int i = 0; i < FaceConst.FACE_NUM_TRIANGLES; i++) {
 			triangles[i * 3 + 0] = FaceConst.FaceTriangles[i, 0];
 			triangles[i * 3 + 1] = FaceConst.FaceTriangles[i, 1];
 			triangles[i * 3 + 2] = FaceConst.FaceTriangles[i, 2];
 		}
-
 		mesh.vertices = vertices;
 		mesh.normals = normals;
 		mesh.uv = uvs;
@@ -37,14 +36,29 @@ public class FaceManager : MonoBehaviour {
 	}
 
 	public void SetMesh(List<Vector3> list) {
-		var mesh = GetComponent<MeshFilter>().sharedMesh;
-
-		int numVerts = list.Count;
-
-		int i = 0;
-		foreach (var vertex in list) {
-			mesh.vertices[i++] = vertex;
+		for (int i = 0; i < list.Count; i++) {
+			vertices[i] = list[i];
+			//Debug.Log (list[i]);
 		}
+		mesh.vertices = vertices;
+		mesh.normals = normals;
+		mesh.uv = uvs;
+		mesh.triangles = triangles;
 		mesh.RecalculateBounds();
+		GetComponent<MeshFilter>().sharedMesh = mesh;
+	}
+
+	void OnDrawGizmos()
+	{
+		if (mesh) {
+			for(int i = 0; i < FaceConst.FACE_NUM_TRIANGLES; i++) {
+				Gizmos.DrawLine (vertices[mesh.triangles[i * 3 + 0]],
+				                 vertices[mesh.triangles[i * 3 + 1]]);
+				Gizmos.DrawLine (vertices[mesh.triangles[i * 3 + 1]],
+				                 vertices[mesh.triangles[i * 3 + 2]]);
+				Gizmos.DrawLine (vertices[mesh.triangles[i * 3 + 2]],
+				                 vertices[mesh.triangles[i * 3 + 0]]);
+			}
+		}
 	}
 }
