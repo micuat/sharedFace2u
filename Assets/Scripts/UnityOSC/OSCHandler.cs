@@ -279,10 +279,11 @@ public class OSCHandler : MonoBehaviour
 	{
 		foreach(KeyValuePair<string,ServerLog> pair in _servers)
 		{
+			_servers[pair.Key].packets.Clear();
 			if(_servers[pair.Key].server.LastReceivedPacket != null)
 			{
 				//Initialization for the first packet received
-				if(_servers[pair.Key].log.Count == 0)
+				if(true||_servers[pair.Key].log.Count == 0)
 				{	
 					_servers[pair.Key].packets.Add(_servers[pair.Key].server.LastReceivedPacket);
 						
