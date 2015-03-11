@@ -21,6 +21,11 @@ public class FaceManager : MonoBehaviour {
 			triangles[i * 3 + 1] = FaceConst.FaceTriangles[i, 1];
 			triangles[i * 3 + 2] = FaceConst.FaceTriangles[i, 2];
 		}
+
+		for(int i = 0; i < FaceConst.FACE_NUM_POINTS; i++) {
+			uvs[i] = new Vector2(FaceConst.FaceUvs[i, 0] / FaceConst.FaceUvWidth, (768-FaceConst.FaceUvs[i, 1]) / FaceConst.FaceUvHeight);
+		}
+
 		mesh.vertices = vertices;
 		mesh.normals = normals;
 		mesh.uv = uvs;
@@ -45,6 +50,7 @@ public class FaceManager : MonoBehaviour {
 		mesh.uv = uvs;
 		mesh.triangles = triangles;
 		mesh.RecalculateBounds();
+		mesh.RecalculateNormals();
 		GetComponent<MeshFilter>().sharedMesh = mesh;
 	}
 
