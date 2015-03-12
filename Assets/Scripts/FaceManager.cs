@@ -14,6 +14,11 @@ public class FaceManager : MonoBehaviour {
 	Vector2[] uvs = new Vector2[FaceConst.FACE_NUM_POINTS];
 	int[] triangles = new int[FaceConst.FACE_NUM_TRIANGLES * 3];
 
+	Vector3 facePosition = new Vector3();
+	Quaternion faceRotation = new Quaternion();
+
+	public GameObject addonObject;
+
 	// Use this for initialization
 	void Start () {
 		mesh = new Mesh();
@@ -49,18 +54,26 @@ public class FaceManager : MonoBehaviour {
 		mesh.RecalculateBounds();
 		mesh.RecalculateNormals();
 		GetComponent<MeshFilter>().sharedMesh = mesh;
+
+		addonObject.transform.position = facePosition;
+		addonObject.transform.rotation = faceRotation;
 	}
 	
 	public void PacketReceivedEvent(OSCServer sender, OSCPacket packet) {
-		Debug.Log (packet.Address);
-		if(packet.Address.Equals("/osceleton/face_mesh")) {
-			for( int i = 0; i < FaceConst.FACE_NUM_POINTS; i++) {
-				float scale = 100;
-				float x = (float)packet.Data[i * 3 + 2] * scale;
-				float y = (float)packet.Data[i * 3 + 3] * scale;
-				float z = (float)packet.Data[i * 3 + 4] * scale;
-				verticesBack[i] = new Vector3(x, y, z);
+		if (packet.Address.Equals ("/osceleton/face_mesh")) {
+			for (int i = 0; i < FaceConst.FACE_NUM_POINTS; i++) {
+				float x = (float)packet.Data [i * 3 + 2] * FaceConst.FACE_SCALE;
+				float y = (float)packet.Data [i * 3 + 3] * FaceConst.FACE_SCALE;
+				float z = (float)packet.Data [i * 3 + 4] * FaceConst.FACE_SCALE;
+				verticesBack [i] = new Vector3 (x, y, z);
 			}
+		} else if (packet.Address.Equals ("/osceleton/face")) {
+			facePosition.x = (float)packet.Data[2] * FaceConst.FACE_SCALE * 0.001f;
+			facePosition.y = -(float)packet.Data[3] * FaceConst.FACE_SCALE * 0.001f;
+			facePosition.z = (float)packet.Data[4] * FaceConst.FACE_SCALE * 0.001f;
+
+			Vector3 euler = new Vector3((float)packet.Data[5], (float)packet.Data[6], (float)packet.Data[7]);
+			faceRotation.eulerAngles = euler;
 		}
 	}
 	
