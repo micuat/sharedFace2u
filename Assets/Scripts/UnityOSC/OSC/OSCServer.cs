@@ -138,7 +138,6 @@ namespace UnityOSC
 				{
                     OSCPacket packet = OSCPacket.Unpack(bytes);
 	                //_lastReceivedPacket = packet;
-					if(!packet.Address.Equals("/osceleton/face_mesh")) return;
                     PacketReceivedEvent(this, packet);	
 				}
 			}
