@@ -38,9 +38,10 @@ namespace UnityOSC
         #endregion
 
         #region Constructors
-        public OSCServer (int localPort)
+		public OSCServer (int localPort, PacketReceivedEventHandler _PacketReceivedEvent)
 		{
-            PacketReceivedEvent += delegate(OSCServer s, OSCPacket p) { };
+//            PacketReceivedEvent += delegate(OSCServer s, OSCPacket p) { };
+			PacketReceivedEvent += _PacketReceivedEvent;
 
 			_localPort = localPort;
 			Connect();
@@ -136,10 +137,9 @@ namespace UnityOSC
 				if(bytes != null && bytes.Length > 0)
 				{
                     OSCPacket packet = OSCPacket.Unpack(bytes);
+	                //_lastReceivedPacket = packet;
 					if(!packet.Address.Equals("/osceleton/face_mesh")) return;
-                    _lastReceivedPacket = packet;
-
-                    PacketReceivedEvent(this, _lastReceivedPacket);	
+                    PacketReceivedEvent(this, packet);	
 				}
 			}
 			catch{
