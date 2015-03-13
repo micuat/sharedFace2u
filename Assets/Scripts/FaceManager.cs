@@ -20,7 +20,11 @@ public class FaceManager : MonoBehaviour {
 	public List<Material> materials;
 	IEnumerator<Material> material;
 
+	public Material fractureMaterial;
+
 	public GameObject addonObject;
+
+	bool doFracture = false;
 
 	// Use this for initialization
 	void Start () {
@@ -60,6 +64,7 @@ public class FaceManager : MonoBehaviour {
 		mesh.RecalculateBounds();
 		mesh.RecalculateNormals();
 		GetComponent<MeshFilter>().sharedMesh = mesh;
+		GetComponent<MeshCollider> ().sharedMesh = mesh;
 
 		addonObject.transform.position = facePosition;
 		addonObject.transform.rotation = faceRotation;
@@ -71,6 +76,67 @@ public class FaceManager : MonoBehaviour {
 			}
 		}
 		GetComponent<Renderer>().material = material.Current;
+
+		if (Input.GetKeyDown (KeyCode.F)) {
+			doFracture = !doFracture;
+		}
+
+		int index = Random.Range (0, FaceConst.FACE_NUM_TRIANGLES);
+		if (doFracture && vertices [triangles [index * 3 + 0]].magnitude > 0) {
+			GameObject fracture = new GameObject ();
+			Mesh fractureMesh = new Mesh ();
+			var fractureVertices = new Vector3[6];
+			var fractureTriangles = new int[24];
+			fractureVertices [0] = vertices [triangles [index * 3 + 0]];
+			fractureVertices [1] = vertices [triangles [index * 3 + 2]];
+			fractureVertices [2] = vertices [triangles [index * 3 + 1]];
+			var upVector = Vector3.Cross (fractureVertices [1] - fractureVertices [0], fractureVertices [2] - fractureVertices [0]);
+			upVector = upVector.normalized * 0.001f;
+			fractureVertices [3] = fractureVertices [0] - upVector;
+			fractureVertices [4] = fractureVertices [1] - upVector;
+			fractureVertices [5] = fractureVertices [2] - upVector;
+			fractureTriangles [0] = 0;
+			fractureTriangles [1] = 1;
+			fractureTriangles [2] = 2;
+			fractureTriangles [3] = 3;
+			fractureTriangles [4] = 5;
+			fractureTriangles [5] = 4;
+
+			fractureTriangles [6] = 0;
+			fractureTriangles [7] = 3;
+			fractureTriangles [8] = 1;
+			fractureTriangles [9] = 4;
+			fractureTriangles [10] = 1;
+			fractureTriangles [11] = 3;
+			fractureTriangles [12] = 1;
+			fractureTriangles [13] = 4;
+			fractureTriangles [14] = 2;
+			fractureTriangles [15] = 5;
+			fractureTriangles [16] = 2;
+			fractureTriangles [17] = 4;
+			fractureTriangles [18] = 2;
+			fractureTriangles [19] = 5;
+			fractureTriangles [20] = 0;
+			fractureTriangles [21] = 3;
+			fractureTriangles [22] = 0;
+			fractureTriangles [23] = 5;
+			fractureMesh.vertices = fractureVertices;
+			fractureMesh.triangles = fractureTriangles;
+			mesh.RecalculateNormals ();
+			fracture.AddComponent<MeshFilter> ();
+			fracture.AddComponent<MeshRenderer> ();
+			fracture.GetComponent<MeshRenderer> ().material = fractureMaterial;
+			fracture.AddComponent<FractureManager> ();
+			fracture.GetComponent<MeshFilter> ().sharedMesh = fractureMesh;
+			fracture.AddComponent<Rigidbody> ();
+			//fracture.GetComponent<Rigidbody> ().isKinematic = true;
+			fracture.GetComponent<Rigidbody> ().useGravity = true;
+			//fracture.AddComponent<MeshCollider> ();
+			//fracture.GetComponent<MeshCollider> ().sharedMesh = fractureMesh;
+			//fracture.GetComponent<MeshCollider> ().convex = true;
+			//fracture.GetComponent<MeshCollider> ().material = GetComponent<MeshCollider> ().material;
+			fracture.transform.position = transform.position;
+		}
 	}
 	
 	public void PacketReceivedEvent(OSCServer sender, OSCPacket packet) {
