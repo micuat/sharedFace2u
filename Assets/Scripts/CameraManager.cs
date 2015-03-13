@@ -71,33 +71,8 @@ public class CameraManager : MonoBehaviour {
 		extrinsics[2,1] = -extrinsics[2,1];
 		extrinsics[2,2] = -extrinsics[2,2];
 		extrinsics[2,3] = -extrinsics[2,3];
-//		Debug.Log (GetComponent<Camera> ().worldToCameraMatrix);
 		GetComponent<Camera> ().worldToCameraMatrix = extrinsics;
-		//extrinsics[1,0] = -extrinsics[1,0];
-		//extrinsics[1,1] = -extrinsics[1,1];
-		//extrinsics[1,2] = -extrinsics[1,2];
-		//extrinsics[2,0] = -extrinsics[2,0];
-		//extrinsics[2,1] = -extrinsics[2,1];
-		//extrinsics[2,2] = -extrinsics[2,2];
-		//extrinsics[0,2] = -extrinsics[0,2];
-		//extrinsics[1,2] = -extrinsics[1,2];
-		//extrinsics[2,2] = -extrinsics[2,2];
-		//extrinsics[2,0] = -extrinsics[2,0];
-
-		//GetComponent<Camera> ().worldToCameraMatrix = extrinsics;
-		return;
-//		extrinsics = extrinsics.inverse;
-/*		extrinsics[2,0] = -extrinsics[2,0];
-		extrinsics[2,1] = -extrinsics[2,1];
-		extrinsics[2,2] = -extrinsics[2,2];
-		extrinsics[2,3] = -extrinsics[2,3];*/
-		Debug.Log (GetComponent<Camera> ().worldToCameraMatrix);
-		transform.position = extrinsics.GetColumn(3);
-		transform.rotation = Quaternion.LookRotation(
-			extrinsics.GetColumn(2),
-			extrinsics.GetColumn(1)
-			);
-		}
+	}
 	
 	// Update is called once per frame
 	void Update () {

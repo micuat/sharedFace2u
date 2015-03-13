@@ -4,7 +4,7 @@ using System.Collections;
 public static class FaceConst {
 	public static int FACE_NUM_POINTS = 121;
 	public static int FACE_NUM_TRIANGLES = 206;
-	public static int FACE_SCALE = 1;//000;
+	public static int FACE_SCALE = 1;
 
 	public static int[,] FaceTriangles = { { 11, 0, 1 },
 		{ 1, 0, 34 },
