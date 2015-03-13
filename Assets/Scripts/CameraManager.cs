@@ -37,7 +37,6 @@ public class CameraManager : MonoBehaviour {
 	// Use this for initialization
 	void Start () {
 		// https://github.com/kylemcdonald/ofxCv/blob/master/libs/ofxCv/src/Calibration.cpp
-		Debug.Log (GetComponent<Camera> ().projectionMatrix);
 		float w = Screen.width;
 		float h = Screen.height;
 		float fx = 1.6994161051180934e+003f;

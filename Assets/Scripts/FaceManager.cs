@@ -16,11 +16,17 @@ public class FaceManager : MonoBehaviour {
 
 	Vector3 facePosition = new Vector3();
 	Quaternion faceRotation = new Quaternion();
-	
+
+	public List<Material> materials;
+	IEnumerator<Material> material;
+
 	public GameObject addonObject;
 
 	// Use this for initialization
 	void Start () {
+		material = materials.GetEnumerator();
+		material.MoveNext();
+
 		mesh = new Mesh();
 		mesh.name = "Mesh";
 
@@ -57,6 +63,14 @@ public class FaceManager : MonoBehaviour {
 
 		addonObject.transform.position = facePosition;
 		addonObject.transform.rotation = faceRotation;
+
+		if (Input.GetKeyDown (KeyCode.RightArrow)) {
+			if(!material.MoveNext()) {
+				material = materials.GetEnumerator();
+				material.MoveNext();
+			}
+		}
+		GetComponent<Renderer>().material = material.Current;
 	}
 	
 	public void PacketReceivedEvent(OSCServer sender, OSCPacket packet) {
