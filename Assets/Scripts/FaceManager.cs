@@ -17,6 +17,9 @@ public class FaceManager : MonoBehaviour {
 	Vector3 facePosition = new Vector3();
 	Quaternion faceRotation = new Quaternion();
 
+	Vector3 fingerPosition = new Vector3();
+	public GameObject fingerObject;
+
 	public List<Material> materials;
 	IEnumerator<Material> material;
 
@@ -24,7 +27,12 @@ public class FaceManager : MonoBehaviour {
 
 	public GameObject addonObject;
 
+	public GameObject lineObject;
+
+	List<GameObject> lines = new List<GameObject>();
+
 	bool doFracture = false;
+	bool doNormal = false;
 
 	// Use this for initialization
 	void Start () {
@@ -42,6 +50,8 @@ public class FaceManager : MonoBehaviour {
 
 		for(int i = 0; i < FaceConst.FACE_NUM_POINTS; i++) {
 			uvs[i] = new Vector2(FaceConst.FaceUvs[i, 0] / FaceConst.FaceUvWidth, (768-FaceConst.FaceUvs[i, 1]) / FaceConst.FaceUvHeight);
+			GameObject line = (GameObject)(GameObject.Instantiate(Resources.Load<GameObject>("LinePrefab"), Vector3.zero, Quaternion.identity));
+			lines.Add(line);
 		}
 
 		mesh.vertices = vertices;
@@ -55,6 +65,8 @@ public class FaceManager : MonoBehaviour {
 	
 	// Update is called once per frame
 	void Update () {
+		fingerObject.transform.position = fingerPosition;
+
 		for( int i = 0; i < FaceConst.FACE_NUM_POINTS; i++) {
 			vertices[i].x = verticesBack[i].x;
 			vertices[i].y = verticesBack[i].y;
@@ -75,10 +87,16 @@ public class FaceManager : MonoBehaviour {
 				material.MoveNext();
 			}
 		}
+		if (Input.GetKey("escape"))
+			Application.Quit();
+
 		GetComponent<Renderer>().material = material.Current;
 
 		if (Input.GetKeyDown (KeyCode.F)) {
 			doFracture = !doFracture;
+		}
+		if (Input.GetKeyDown (KeyCode.P)) {
+			fingerObject.GetComponent<Renderer>().enabled = !fingerObject.GetComponent<Renderer>().enabled;
 		}
 
 		int index = Random.Range (0, FaceConst.FACE_NUM_TRIANGLES);
@@ -137,6 +155,22 @@ public class FaceManager : MonoBehaviour {
 			//fracture.GetComponent<MeshCollider> ().material = GetComponent<MeshCollider> ().material;
 			fracture.transform.position = transform.position;
 		}
+
+		if (Input.GetKeyDown (KeyCode.N)) {
+			doNormal = !doNormal;
+		}
+
+		if (doNormal) {
+			normals = mesh.normals;
+			for (int i = 0; i < normals.GetLength(0); i++) {
+				if (uvs [i].x > 0.4 && uvs [i].x < 0.6) {
+					var lineRenderer = lines[i].GetComponent<LineRenderer>();
+					lineRenderer.SetPosition(0, vertices [i]);
+					lineRenderer.SetPosition(1, vertices [i] + normals [5] * 0.05f);
+					//lines[i].GetComponent<LineRenderer>() = lineRenderer;
+				}
+			}
+		}
 	}
 	
 	public void PacketReceivedEvent(OSCServer sender, OSCPacket packet) {
@@ -158,6 +192,10 @@ public class FaceManager : MonoBehaviour {
 
 			Vector3 euler = new Vector3((float)packet.Data[5], (float)packet.Data[6], -(float)packet.Data[7]);
 			faceRotation.eulerAngles = euler;
+		} else if (packet.Address.Equals ("/osceleton/fingertip")) {
+			fingerPosition.x = -(float)packet.Data[1];
+			fingerPosition.y = (float)packet.Data[2];
+			fingerPosition.z = (float)packet.Data[3];
 		}
 	}
 	

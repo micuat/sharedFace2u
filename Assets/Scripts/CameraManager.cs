@@ -54,12 +54,12 @@ public class CameraManager : MonoBehaviour {
 
 		GetComponent<Camera> ().projectionMatrix = intrinsics;
 
-		extrinsics.SetRow (0, new Vector4 (9.6951375724054678e-001f, 9.4447770100172856e-002f,
-		                                   2.2610328003906302e-001f, -3.3052667086500043e+002f));
-		extrinsics.SetRow (1, new Vector4 (-2.3094250319200885e-002f, 9.5384408201206639e-001f,
-		                                   -2.9941296366849657e-001f, -8.9743887308778181e+000f));
-		extrinsics.SetRow (2, new Vector4 (-2.4394616234635083e-001f, 2.8506330162555693e-001f,
-		                                   9.2694616021796250e-001f, 3.8313595147359138e+001f));
+		extrinsics.SetRow (0, new Vector4 (9.8459348307746297e-01f, -2.8561998241887054e-02f,
+		                                   1.7251053688925808e-01f, -3.0057656982221096e+02f));
+		extrinsics.SetRow (1, new Vector4 (7.0698241319628125e-02f, 9.6736021573543540e-01f,
+		                                   -2.4334332061226491e-01f, 2.8951824470749141e+00f));
+		extrinsics.SetRow (2, new Vector4 (-1.5992945868632599e-01f, 2.5179043919244110e-01f,
+		                                   9.5447584724579404e-01f, -5.4816005595217014e+01f));
 		extrinsics.SetRow (3, new Vector4 (0, 0, 0, 1));
 		// ofxKinect is 1000x scaled
 		extrinsics [0, 3] /= 1000;
